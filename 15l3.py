@@ -79,7 +79,7 @@ def bimage(xy,Matrix,water,output):
             elif Matrix[a][b] >= 10:
                 im.putpixel((a,b),(140,155+Matrix[a][b],150))
                 #'''
-    im.save("/usr/home/g/pat/"+str(output)+".png","PNG")
+    im.save("./"+str(output)+".png","PNG")
 
 def init():
     xy=32
