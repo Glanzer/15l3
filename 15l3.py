@@ -4,13 +4,6 @@ import math
 import random
 from PIL import Image
 
-class town:
-    def __init__(self):
-        self.name="townname"
-        self.coords=0,0
-        self.population=[]
-
-
 def smooth(M,x,y):
     #print(M[x][y])
     if M[x][y] >= 2:
