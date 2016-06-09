@@ -1,6 +1,5 @@
 #! /bin/python
 
-import math
 import random
 from PIL import Image
 
@@ -89,8 +88,8 @@ def init():
     Matrix = [[0 for x in range(xy*4)] for x in range(xy*4)]
     x=0
     y=0
-    maps=50
-    start=750
+    maps=5      #how many maps to generate.
+    start=0     #where do we start to count.
     for u in range (start,start+maps):
         bimage(xy,bterrain(xy,[[0 for x in range(xy*4)] for x in range(xy*4)],x,y,mutator),water,u)
 
