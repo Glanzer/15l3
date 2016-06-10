@@ -45,23 +45,23 @@ def bterrain(xy, Matrix, x, y, mutator):
             print("ding!")
             za=random.randint(0,3)
             zb=random.randint(0,3)
-        x=random.randint(5,(xy/2)-5)+random.randint(5,(xy/2)-5)+(xy*za)
-        y=random.randint(5,(xy/2)-5)+random.randint(5,(xy/2)-5)+(xy*zb)
+        x=random.randint(5,(xy/2)-5)+random.randint(5,(xy/2)-5)+za
+        y=random.randint(5,(xy/2)-5)+random.randint(5,(xy/2)-5)+zb
         Matrix[x][y]=random.randint(-5,5)
         smooth(Matrix,x,y)
         #'''
     for m in range (0,int(mutator/random.uniform(1.0,2.0))):
-        x=random.randint(5,(xy*2)-5)+random.randint(5,(xy*2)-5)
-        y=random.randint(5,(xy*2)-5)+random.randint(5,(xy*2)-5)
+        x=random.randint(5,(int(xy/2))-5)+random.randint(5,(int(xy/2))-5)
+        y=random.randint(5,(int(xy/2))-5)+random.randint(5,(int(xy/2))-5)
         Matrix[x][y]=random.randint(0,5)
         smooth(Matrix,x,y)
     return Matrix
 
 def bimage(xy,Matrix,water,output):
     im=None
-    im=Image.new("RGB",(xy*4,xy*4),water)
-    for a in range(0,xy*4):
-        for b in range(0,xy*4):
+    im=Image.new("RGB",(xy,xy),water)
+    for a in range(0,xy):
+        for b in range(0,xy):
             if Matrix[a][b] >= 1:
                 im.putpixel((a,b),(Matrix[a][b]*10+100,Matrix[a][b]*10+50,0))
             '''
@@ -79,14 +79,14 @@ def bimage(xy,Matrix,water,output):
     im.save("./"+str(output)+".png","PNG")
 
 def run():
-    xy=32
-    mutator=int(xy*xy*random.uniform(1.0,2.0))
+    xy=128
+    mutator=int(xy/random.uniform(2.0,9.0))*15+1
     land=(200,150,0)
     water=(0,50,0)
-    Matrix = [[0 for x in range(xy*4)] for x in range(xy*4)]
+    Matrix = [[0 for x in range(xy*2)] for x in range(xy*2)]
     x=0
     y=0
     maps=5      #how many maps to generate.
     start=0     #where do we start to count.
     for u in range (start,start+maps):
-        bimage(xy,bterrain(xy,[[0 for x in range(xy*4)] for x in range(xy*4)],x,y,mutator),water,u)
+        bimage(xy,bterrain(xy,[[0 for x in range(xy)] for x in range(xy)],x,y,mutator),water,u)
