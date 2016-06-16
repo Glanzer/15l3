@@ -77,6 +77,10 @@ def bimage(xy,Matrix,water,output):
                 im.putpixel((a,b),(140,155+Matrix[a][b],150))
                 #'''
     im.save("./"+str(output)+".png","PNG")
+    smatrix(Matrix,output)
+    
+def smatrix(Matrix,output):
+    open("./"+str(output)+".map",'w').write(str(Matrix))
 
 def run():
     xy=128
@@ -90,3 +94,4 @@ def run():
     start=0     #where do we start to count.
     for u in range (start,start+maps):
         bimage(xy,bterrain(xy,[[0 for x in range(xy)] for x in range(xy)],x,y,mutator),water,u)
+
