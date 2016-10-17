@@ -4,7 +4,7 @@ from PIL import Image
 import random
 c=0
 i=0
-xy=512
+xy=256
 if xy % 2 is not 0:
     xy=xy+1
 Matrix = [[[0 for i in range(xy*2)] for i in range(xy*2)] for i in range(xy*2)]
@@ -17,13 +17,13 @@ z=int(xy/2)
 water=(10,10,10)
 output=7334
 
-for k in range(0,750):
-    roomx=random.randint(6,16)
-    roomy=random.randint(6,16)
+for k in range(0,10):
+    roomx=random.randint(1,3)+random.randint(1,3)+random.randint(1,9)+random.randint(0,9)
+    roomy=random.randint(1,3)+random.randint(1,3)+random.randint(1,9)+random.randint(0,9)
     i=0
     j=0    
     x=random.randint(0,xy)
-    y=random.randint(0,xy/2)+random.randint(0,xy/2)
+    y=random.randint(0,xy)
     interrupt=False
     d=0
     
@@ -93,7 +93,7 @@ for k in range(0,750):
             #Matrix[x-i][y-j][z]=1
     interrupt=False
 
-Btrix=[[0 for i in range(xy*2)] for i in range(xy*2)]
+Btrix=[[0 for i in range(xy)] for i in range(xy)]
 
 countt=0
 a=0
@@ -114,8 +114,56 @@ im=None
 im=Image.new("RGB",(xy,xy),water)
 for a in range(0,xy):
     for b in range(0,xy):
-        if Btrix[a][b] is not 0:
+        if Matrix[a][b][z] is not 0:
             im.putpixel((a,b),(50+a,b,50+random.randint(0,z)))
 print("./"+str(output)+".png","PNG")
 im.save("./"+str(output)+".png","PNG")
+im=Image.new("RGB",(xy,xy),water)
+for a in range(0,xy):
+    for b in range(0,xy):
+        if Btrix[a][b] is not 0:
+            im.putpixel((a,b),(50+a,b,50+random.randint(0,z)))
+print("./"+str(7335)+".png","PNG")
+im.save("./"+str(7335)+".png","PNG")
 #smatrix(Matrix,output)
+
+
+#Matrix[a][b][z] #rooms in total values
+Ctrix=[[None for i in range(xy)] for i in range(xy)]
+
+coun=0
+
+def crawl(A,B,a,b,z,xy,coun):
+    B[a][b]=coun
+    for c in range(-1,1):
+        for d in range(-1,1):
+            if A[a+c][b+d][z] is not 0 and B[a+c][b+d] is None:
+                print("tick")
+                B=crawl(A,B,a+c,b+d,z,xy,coun)
+                #B[a+c][b+d]=coun
+    return B
+
+
+
+for a in range(0,xy):
+    for b in range(0,xy):
+        if Matrix[a][b][z] is not 0 and Ctrix[a][b] is None:
+            coun=coun+1
+        
+            #print("crawl the whole room and put it's tiles into Ctrix") ##11
+            Ctrix=crawl(Matrix,Ctrix,a,b,z,xy,coun)
+            
+        else:
+            print("done, switching to room: "+str(coun))
+    
+
+print(str(Ctrix).replace("None"," ").replace("]","\n"))
+
+im=Image.new("RGB",(xy,xy),water)
+print("\nRooms: "+str(coun))
+for a in range(0,xy):
+    for b in range(0,xy):
+        if Ctrix[a][b] is not None:
+            im.putpixel((a,b),(Ctrix[a][b],Ctrix[a][b],Ctrix[a][b]))
+print("./"+str(7336)+".png","PNG")
+im.save("./"+str(7336)+".png","PNG")
