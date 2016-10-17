@@ -14,12 +14,8 @@ z=int(xy/2)
 #print(Matrix[x][y][z])
 #print(Matrix)
 
-
 water=(10,10,10)
 output=7334
-
-
-
 
 for k in range(0,750):
     roomx=random.randint(6,16)
@@ -38,11 +34,6 @@ for k in range(0,750):
     #Matrix[x-2][y+i][z] is 0 if there's room to move on the left
     #Matrix[x+roomx+1][y+i][z] is 0 if there's no problem on the right #if it's 1 and there's room on the left, move 1
     #Matrix[x+roomx+2][y+i][z] is 0 if there's room to move on the right
-    
-
-    
-    
-    
     
     step=2
     while (Matrix[x-1][y+i][z] is 1 or Matrix[x+roomx+1][y+i][z] is 1 or Matrix[x+j][y-1][z] is 1 or Matrix[x+j][y+roomy+1][z] is 1) and interrupt is False:
@@ -91,7 +82,6 @@ for k in range(0,750):
                     if Matrix[x+j][y+roomy+1][z] is 1:
                         y=y-step
                 
-    
     for i in range(0,roomx):
         for j in range(0,roomy):
             if interrupt is False:
@@ -118,7 +108,6 @@ for a in range(0,xy):
         if countt >=random.randint(1,2) and countt <=random.randint(2,3):
             Btrix[a][b]=1
         countt =0
-
 
 ## imageout
 im=None
