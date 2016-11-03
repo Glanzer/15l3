@@ -1,169 +1,190 @@
 #! /bin/python
 
-from PIL import Image
 import random
-c=0
-i=0
-xy=256
-if xy % 2 is not 0:
-    xy=xy+1
-Matrix = [[[0 for i in range(xy*2)] for i in range(xy*2)] for i in range(xy*2)]
+from PIL import Image
 
-z=int(xy/2)
-#print(str(x)+"\t"+str(y)+"\t"+str(z))
-#print(Matrix[x][y][z])
-#print(Matrix)
+def pmatrix(M):
+    print(" "+str(M).replace("],","\n").replace("[","").replace(","," ").replace("]","").replace("'",""))
 
-water=(10,10,10)
-output=7334
-
-for k in range(0,10):
-    roomx=random.randint(1,3)+random.randint(1,3)+random.randint(1,9)+random.randint(0,9)
-    roomy=random.randint(1,3)+random.randint(1,3)+random.randint(1,9)+random.randint(0,9)
-    i=0
-    j=0    
-    x=random.randint(0,xy)
-    y=random.randint(0,xy)
-    interrupt=False
-    d=0
-    
-    print("placing room "+str(k)+"["+str(roomx)+","+str(roomy)+"]@"+str(x)+","+str(y))
-    
-    #Matrix[x][y][z] #room coordinates, top left
-    #Matrix[x-1][y+i][z] is 0 if there's no problem on the left. #if it's 1 and there's room on the right move 1
-    #Matrix[x-2][y+i][z] is 0 if there's room to move on the left
-    #Matrix[x+roomx+1][y+i][z] is 0 if there's no problem on the right #if it's 1 and there's room on the left, move 1
-    #Matrix[x+roomx+2][y+i][z] is 0 if there's room to move on the right
-    
-    step=2
-    while (Matrix[x-1][y+i][z] is 1 or Matrix[x+roomx+1][y+i][z] is 1 or Matrix[x+j][y-1][z] is 1 or Matrix[x+j][y+roomy+1][z] is 1) and interrupt is False:
-        for i in range(0,roomy):
-            for j in range(0,roomx):
-                if x<1 or x>xy:
-                    print("Room "+str(k)+" left the map")
-                    interrupt=True
-                    i=roomy
-                if y<1 or y>xy:
-                    print("Room "+str(k)+" left the map")
-                    interrupt=True
-                    i=roomy
-                if Matrix[x-1][y+i][z] is 1:
-                    if Matrix[x+roomx+1][y+i][z] is 1:
-                        print("ouch!",d,"room "+str(k))
-                        c=x
-                        x=y
-                        y=c
-                        c=0
-                        if d >=2 and d<3:
-                            interrupt=True
-                            print("this doesn't fit | room "+str(k))
-                            i=roomy
-                        d=d+1
-                    elif Matrix[x+roomx+2][y+i][z] is 0:
-                        x=x+step
-                elif Matrix[x-1][y+i][z] is 0:
-                    if Matrix[x+roomx+1][y+i][z] is 1:
-                        x=x-step
-                if Matrix[x+j][y-1][z] is 1:
-                    if Matrix[x+j][y+roomy+1][z] is 1:
-                        print("ouch!",d,"room "+str(k))
-                        c=x
-                        x=y
-                        y=c
-                        c=0
-                        if d >=2 and d<3:
-                            interrupt=True
-                            print("this doesn't fit | room "+str(k))
-                            i=roomy
-                        d=d+1
-                    elif Matrix[x+j][y+roomy+2][z] is 0:
-                        y=y+step
-                elif Matrix[x+j][y-1][z] is 0:
-                    if Matrix[x+j][y+roomy+1][z] is 1:
-                        y=y-step
-                
-    for i in range(0,roomx):
-        for j in range(0,roomy):
-            if interrupt is False:
-                Matrix[x+i][y+j][z]=k
-            else:
-                print("we've lost Room "+str(k))
-                i=roomx
-                #k=k-1
-            #Matrix[x-i][y-j][z]=1
-    interrupt=False
-
-Btrix=[[0 for i in range(xy)] for i in range(xy)]
-
-countt=0
-a=0
-b=0
-for a in range(0,xy):
-    for b in range(0,xy):
-        #if Matrix[a][b][z] is not 0:
-        for l in range(-1,1):
-            for m in range(-1,1):
-                if Matrix[a+l][b+m][z] is 0:
-                    countt=countt+1
-        if countt >=random.randint(1,2) and countt <=random.randint(2,3):
-            Btrix[a][b]=1
-        countt =0
-
-## imageout
-im=None
-im=Image.new("RGB",(xy,xy),water)
-for a in range(0,xy):
-    for b in range(0,xy):
-        if Matrix[a][b][z] is not 0:
-            im.putpixel((a,b),(50+a,b,50+random.randint(0,z)))
-print("./"+str(output)+".png","PNG")
-im.save("./"+str(output)+".png","PNG")
-im=Image.new("RGB",(xy,xy),water)
-for a in range(0,xy):
-    for b in range(0,xy):
-        if Btrix[a][b] is not 0:
-            im.putpixel((a,b),(50+a,b,50+random.randint(0,z)))
-print("./"+str(7335)+".png","PNG")
-im.save("./"+str(7335)+".png","PNG")
-#smatrix(Matrix,output)
-
-
-#Matrix[a][b][z] #rooms in total values
-Ctrix=[[None for i in range(xy)] for i in range(xy)]
-
-coun=0
-
-def crawl(A,B,a,b,z,xy,coun):
-    B[a][b]=coun
-    for c in range(-1,1):
-        for d in range(-1,1):
-            if A[a+c][b+d][z] is not 0 and B[a+c][b+d] is None:
-                print("tick")
-                B=crawl(A,B,a+c,b+d,z,xy,coun)
-                #B[a+c][b+d]=coun
+def walk(B,M,px,py):
+    fin=False
+    B[px][py]=M[px][py]
+    for x in range(-1,2):
+        for y in range(-1,2):
+            if (px+x<len(M[0])-1 and py+y<len(M[0])-1) and (px+x>0 and py+y>0):
+                if (M[px+x][py+y] is not 0) and (B[px+x][py+y] is 0):
+                    B=walk(B,M,px+x,py+y)
     return B
 
+def bimage(M,name,xy,j):
+    im=None
+    im=Image.new("RGB",(len(M[0]),len(M[0])),(100,0,100))
+    for x in range(0,len(M[0])):
+        for y in range(0,len(M[0])):
+            #print(x,y,M[x][y])
+            if M[x][y] is j:
+                im.putpixel((x,y),(250,100,0))
+            else:
+                im.putpixel((x,y),(M[x][y]*3,M[x][y]*4,M[x][y]*2))
+    #im.show()
+    im.save("./"+str(name)+".png","PNG")
+
+class room():
+    level=[]
+    def __init__(self,name):
+        self.name=None
+        self.cords=[]
+        self.exits=[]
+        self.nghbr=[]
+
+def sorms(rms,tarjay):
+    j=None
+    for i in range(0,len(rms)):
+        if rms[i].name is tarjay:
+            j=i
+    return j
+
+def place_rooms(rooms,xy):
+    Matrix = [[0 for x in range(xy[0])] for x in range(xy[1])]
+    for i in range(0,rooms):
+        roomx = random.randint(0,xy[0])
+        roomy = random.randint(0,xy[1])
+        roomsx = random.randint(1,8)+random.randint(1,4)+random.randint(1,4)
+        roomsy = random.randint(1,8)+random.randint(1,4)+random.randint(1,4)
+        if roomx+roomsx > xy[0]:
+            roomx=roomx-(roomx+roomsx-xy[0])
+        elif roomx < 1:
+            roomx+=1
+        if roomy+roomsy > xy[1]:
+            roomy=roomy-(roomy+roomsy-xy[1])
+        elif roomy < 1:
+            roomy+=1
+        for x in range(0,roomsx):
+            if (Matrix[roomx+x][roomy-1] is not 0) and (roomy+roomsy) <= xy[1]:
+                roomy=roomy-1
+        for y in range(0,roomsy):
+            if (Matrix[roomx-1][roomy+y] is not 0) and (roomx+roomsx) <= xy[0]:
+                roomx=roomx-1
+        for x in range(0,roomsx):
+            for y in range(0,roomsy):
+                Matrix[roomx+x][roomy+y]=i
+    return Matrix
+
+def fix_walls(M,xy):
+    for x in range(0,xy[0]):
+        for y in range(0,xy[1]):
+            chc=0
+            '''
+            for j in range(-1,2):
+                for k in range(-1,2):
+                    if (x+j<xy[0] and y+k<xy[1]) and (x+j>0 and y+k>0):
+                        if (M[x+j][y+k] is not 0) and (M[x+j][y+k] is not M[x][y]):
+                            chc=chc+1
+            #print(str(chc)+"\t"+str(x)+"/"+str(y))
+            if chc > 1: M[x][y]=0
+            chc=0
+            '''
+            if M[x][y] is not 0:
+                for j in range(-1,2):
+                    for k in range(-1,2):
+                        if (x+j<xy[0] and y+k<xy[1]) and (x+j>0 and y+k>0):
+                            if (M[x+j][y+k] is not M[x][y])and(M[x+j][y+k] is not 0):
+                                chc+=1
+            if chc > 1: M[x][y]=0
+            chc=0
+            if M[x][y] is not 0:
+                for j in range(-1,2):
+                    for k in range(-1,2):
+                        if (x+j<xy[0] and y+k<xy[1]) and (x+j>0 and y+k>0):
+                            if (M[x+j][y+k] is not M[x][y])and(M[x+j][y+k] is not 0):
+                                chc+=1
+            if chc > 0: M[x][y]=0
+            '''
+            if (M[x][y] %2 is 0):
+                if chc < 4: M[x][y]=0
+            else:
+                if chc < 3: M[x][y]=0
+            '''
+    return M
 
 
-for a in range(0,xy):
-    for b in range(0,xy):
-        if Matrix[a][b][z] is not 0 and Ctrix[a][b] is None:
-            coun=coun+1
-        
-            #print("crawl the whole room and put it's tiles into Ctrix") ##11
-            Ctrix=crawl(Matrix,Ctrix,a,b,z,xy,coun)
-            
-        else:
-            print("done, switching to room: "+str(coun))
-    
+def get_rooms(Matrix,xy):
+    rmlist=[]
+    rms=[]
+    Btrix = [[0 for x in range(xy[0])] for x in range(xy[1])]
+    Matrix=fix_walls(Matrix,xy)
+    #pmatrix(Matrix)
+    for x in range(1,xy[0]):
+        for y in range(1,xy[1]):
+            if Matrix[x][y] is not 0 and Btrix[x][y] is 0:
+                Btrix=walk(Btrix,Matrix,x,y)
+                if Btrix[x][y] not in rmlist:
+                    rmlist.append(Btrix[x][y])
+                    rms.append(room(Btrix[x][y]))
+                    rms[len(rms)-1].name=Btrix[x][y]
+                    rms[(len(rms)-1)].cords.append([x,y])
+                    
+                    #print(rms[sorms(rms,Btrix[x][y])].cords)
+                else:
+                    rms[sorms(rms,Btrix[x][y])].cords.append([x,y])
+    #print(rms[0]) #did we make everything 0?
+    rms[0].level=Btrix
+    return rms
 
-print(str(Ctrix).replace("None"," ").replace("]","\n"))
 
-im=Image.new("RGB",(xy,xy),water)
-print("\nRooms: "+str(coun))
-for a in range(0,xy):
-    for b in range(0,xy):
-        if Ctrix[a][b] is not None:
-            im.putpixel((a,b),(Ctrix[a][b],Ctrix[a][b],Ctrix[a][b]))
-print("./"+str(7336)+".png","PNG")
-im.save("./"+str(7336)+".png","PNG")
+
+
+### Initialization
+xy = (64,64)
+rooms=32
+###placing rooms
+Matrix=place_rooms(rooms,xy)
+###walking and numbering rooms
+Rooms=get_rooms(Matrix,xy)
+
+
+rmlist=[]
+for i in range(0,len(Rooms)):rmlist.append(Rooms[i].name)
+#print(rmlist)
+rmlist.sort()
+print(rmlist)
+print("\n")
+
+bimage(Rooms[0].level,"map",xy,Rooms[0].name)
+
+#'''
+memo=[]
+for x in range(0,xy[0]):
+    for y in range(0,xy[1]):
+        count=[0,0]
+        rooms=[]
+        if Rooms[0].level[x][y] is 0:
+            for j in range(-1,2):
+                for k in range(-1,2):
+                    if (x+j>0 and y+k>0)and(x+j<len(Rooms[0].level[0])and y+k<len(Rooms[0].level[0])):
+                        if (Rooms[0].level[x+j][y+k] is 0) and ([x+j,y+k] not in memo): 
+                            if j is 0: count[0]=count[0]+1
+                            if k is 0: count[1]=count[1]+1
+                        elif (Rooms[0].level[x+j][y+k] is not 0) and (Rooms[0].level[x+j][y+k] not in rooms):
+                            rooms.append(Rooms[0].level[x+j][y+k])
+        #if len(rooms)>1:print(str(rooms)+"\t\t"+str(x)+"/"+str(y))
+            #print(count)
+        #print(count)
+        if (count[0]is 3 or count[1]is 3)and len(rooms)>1:
+            memo.append([rooms,[x,y]])
+#print(memo)
+#memo[i][0][0]  -> possible Room connecting
+#memo[i][0][1]  -> possible Target-room
+#memo[i][1]     -> possible Doorway coordinates
+#memo[i]        -> possibility #i
+
+for i in range(0,len(rmlist)):
+    for j in range(0,len(memo[0])):
+        if Rooms[i].name in memo[j][0]:
+            Rooms[i].exits.append(memo[j])
+
+
+for i in range(0,len(rmlist)):
+    print("Room: "+str(Rooms[i].name)+"\t"+str(Rooms[i].exits))
+
+#'''
