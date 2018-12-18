@@ -84,9 +84,9 @@ def smatrix(Matrix,output):
 
 def run():
     xy=128
-    mutator=int(xy/random.uniform(2.0,9.0))*15+1
-    land=(200,150,0)
-    water=(0,50,0)
+    mutator=int(xy/random.uniform(2.0,9.0))*64+1
+    land=(200,150,0)    ## color
+    water=(0,50,0)      ## color
     Matrix = [[0 for x in range(xy*2)] for x in range(xy*2)]
     x=0
     y=0
@@ -95,3 +95,4 @@ def run():
     for u in range (start,start+maps):
         bimage(xy,bterrain(xy,[[0 for x in range(xy)] for x in range(xy)],x,y,mutator),water,u)
 
+run()

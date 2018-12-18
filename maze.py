@@ -4,7 +4,8 @@ import random
 from PIL import Image
 
 def pmatrix(M):
-    print(" "+str(M).replace("],","\n").replace("[","").replace(","," ").replace("]","").replace("'",""))
+    #print(" "+str(M).replace("],","\n").replace("[","").replace(","," ").replace("]","").replace("'",""))
+    pass
 
 def walk(B,M,px,py):
     fin=False
@@ -119,10 +120,9 @@ def get_rooms(Matrix,xy):
 
 
 
-
 ### Initialization
 xy = (64,64)
-rooms=32
+rooms=64
 ###placing rooms
 Matrix=place_rooms(rooms,xy)
 ###walking and numbering rooms
@@ -133,8 +133,8 @@ rmlist=[]
 for i in range(0,len(Rooms)):rmlist.append(Rooms[i].name)
 #print(rmlist)
 #rmlist.sort()
-print(rmlist)
-print("\n")
+#print(rmlist)
+#print("\n")
 
 
 
@@ -168,12 +168,17 @@ for x in range(0,xy[0]):
                 if (count[0]> 2 and counu[0]> 4)or(count[1]> 2 and counu[1]> 4):
                     memo.append([rooms,[x,y]])
 
+#bimage(Rooms[0].level,"map",xy,Rooms[0].name)
+
+#'''
 for i in range(0,len(memo)):
     Rooms[0].level[memo[i][1][0]][memo[i][1][1]]=999
+    print(memo[i])
+#'''
 
-bimage(Rooms[0].level,"map",xy,Rooms[0].name)
+#bimage(Rooms[0].level,"map",xy,Rooms[0].name)
 
-print(memo)
+#print(memo)
 #memo[i][0][0]  -> possible Room connecting
 #memo[i][0][1]  -> possible Target-room
 #memo[i][1]     -> possible Doorway coordinates
@@ -181,6 +186,7 @@ print(memo)
 #memo[i]        :: [[RoomA,RoomB],[x,y]]
 
 #print(len(Rooms))
+
 print("\n")
 for i in range(0,len(Rooms)):
     print(Rooms[i].name)
@@ -188,6 +194,9 @@ for i in range(0,len(Rooms)):
         if Rooms[i].name in memo[j][0]:
             Rooms[i].exits.append(memo[j])
     print(Rooms[i].exits)
+
+bimage(Rooms[0].level,"map",xy,Rooms[0].name)
+
 '''
 for i in range(0,len(rmlist)):
     if len(Rooms[i].exits) is 0: print(Rooms[i].name)
