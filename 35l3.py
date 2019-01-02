@@ -75,9 +75,9 @@ def bimage(Map, name):
 
 
 def main():
-	xy = [64, 64]
+	xy = [128, 128]
 	Map = [[None for x in range(xy[0])] for x in range(xy[1])]
-	rooms = generateRooms(128, [5,5], [32,32])
+	rooms = generateRooms(256, [5,5], [18,18])
 	Map = placeRooms(Map, rooms, xy)
 	
 	bimage(Map, "maze")
